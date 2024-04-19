@@ -22,6 +22,7 @@ namespace mspaint
         private Color penColor = Color.Black;
         private Color drawColor = Color.Black;
         private int penSize = 4;
+        private string selected = "pen";
 
         // Bitmap that saves the drawing surface.
         private Bitmap drawingSurface = new Bitmap(800, 600);
@@ -47,12 +48,18 @@ namespace mspaint
         {
             isDrawing = true;
             previousPoint = e.Location;         // Saves the location of the mouse when it began drawing
+
+            if (selected == "square") 
+            { 
+            
+            
+            }
         }
 
         // Runs while the mouse is held, uses the mouse movement to draw.
         private void pbxPaper_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isDrawing)
+            if (isDrawing && selected == "pen")
             {
                 using (Graphics g = Graphics.FromImage(drawingSurface))
                 {
@@ -92,11 +99,13 @@ namespace mspaint
 
         private void btnEraser_Click(object sender, EventArgs e)
         {
+            selected = "pen";
             drawColor = Color.White;
         }
 
         private void btnPen_Click(object sender, EventArgs e)
         {
+            selected = "pen";
             drawColor = penColor;
         }
 
@@ -116,28 +125,34 @@ namespace mspaint
         }
     }
 
-    public class Draw
-    {
-        private int _thickness;
-        private int _color;
-
-        public int Thickness { get { return _thickness; } set { _thickness = value; } }
-        public int Color { get { return _color; } set { _color = value; } }
-
-        public Draw(int thickness, int color)
-        {
-            Thickness = thickness;
-            Color = color;
-        }
-        
-
-
-        // create an array of all draw objects in forms class to use the undo and redo functionality.
-    }
-
     public class Geometry
     {
         private int _width;
         private int _height;
+
+        public int Width { get { return _width; } set { _width = value; } }
+        public int Height { get { return _height; } set { _height = value; } }
+
     }
+
+    public class Square : Geometry
+    {
+
+    }
+
+    public class Ellipse : Geometry
+    {
+
+    }
+
+    public class Line : Geometry
+    {
+
+    }
+
+    public class Text
+    {
+
+    }
+
 }
