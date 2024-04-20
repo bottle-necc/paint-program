@@ -124,35 +124,4 @@ namespace mspaint
             drawColor = penColor;
         }
     }
-
-    public class Geometry
-    {
-        private int _width;
-        private int _height;
-
-        public int Width { get { return _width; } set { _width = value; } }
-        public int Height { get { return _height; } set { _height = value; } }
-
-    }
-
-    public class Square : Geometry
-    {
-
-    }
-
-    public class Ellipse : Geometry
-    {
-
-    }
-
-    public class Line : Geometry
-    {
-
-    }
-
-    public class Text
-    {
-
-    }
-
 }
