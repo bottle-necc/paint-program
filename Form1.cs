@@ -18,6 +18,7 @@ namespace mspaint
 {
     public partial class Form1 : Form
     {
+
         private bool isDrawing = false;
         private Point previousPoint;        // Remembers the previous mouse position
         private Color penColor = Color.Black;
@@ -188,13 +189,14 @@ namespace mspaint
                 
         }
 
+        // Gets the relevant positions to draw the figure
         public void GetPoints(Point previousPoint, Point nextPoint)
         {
             PreviousPoint = previousPoint;
             NextPoint = nextPoint;
         }
 
-
+        // Draws the shape
         public void Draw()
         {
             int oldX = _previousPoint.X;
@@ -235,13 +237,14 @@ namespace mspaint
 
         }
 
+        // Gets the relevant positions to draw the figure
         public void GetPoints(Point previousPoint, Point nextPoint)
         {
             PreviousPoint = previousPoint;
             NextPoint = nextPoint;
         }
 
-
+        // Draws the shape
         public void Draw()
         {
             int oldX = _previousPoint.X;
