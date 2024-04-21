@@ -93,18 +93,16 @@ namespace mspaint
             if (selected == "square")
             {
                 square.Draw(previousPoint, e.Location);
-                pbxPaper.Invalidate();
             }
             if (selected == "ellipse")
             {
                 ellipse.Draw(previousPoint, e.Location);
-                pbxPaper.Invalidate();
             }
             if (selected == "line")
             {
                 line.Draw(previousPoint, e.Location);
-                pbxPaper.Invalidate();
             }
+            pbxPaper.Invalidate();
         }
 
         private void pbxPaper_Paint(object sender, PaintEventArgs e)
@@ -159,6 +157,16 @@ namespace mspaint
         private void btnLine_Click(object sender, EventArgs e)
         {
             selected = "line";
+        }
+
+        private void btnUndo_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnRedo_Click(object sender, EventArgs e)
+        {
+
         }
     }
 
@@ -289,10 +297,41 @@ namespace mspaint
 
         }
 
+        // Draws the shape
         public void Draw(Point previousPoint, Point nextPoint) 
         { 
             _g.DrawLine(new Pen(Colour, _size), previousPoint, nextPoint);
         }
-
     }
+
+    // Initializes the stacks
+    public class UndoRedoManager
+    {
+        private Stack<Bitmap> undoStack = new Stack<Bitmap>();
+        private Stack<Bitmap> redoStack = new Stack<Bitmap>();
+
+        // Adds the current bitmap status to the undo stack and clears the redo stack
+        public void AddState(Bitmap status)
+        {
+            undoStack.Push(status); 
+            redoStack.Clear();
+        }
+
+        public Bitmap Undo(Bitmap currentStatus)
+        {
+            // If there are no previous versions, return the current one
+            if (undoStack.Count == 0)
+            {
+                return currentStatus;
+            }
+
+            // Takes the latest version from the stack
+            Bitmap previousStatus = undoStack.Pop();
+
+            // Adds the current version into the redo stack
+            redoStack.Push(currentStatus);
+            return previousStatus;
+        }
+    }
+
 }
