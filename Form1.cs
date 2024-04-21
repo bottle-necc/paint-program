@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -32,7 +33,7 @@ namespace mspaint
         private HistoryManager historyManager = new HistoryManager();
 
         // Bitmap that saves the drawing surface
-        private Bitmap drawingSurface = new Bitmap(800, 600);
+        private Bitmap drawingSurface = new Bitmap(659, 360);
 
         public Form1()
         {
@@ -176,6 +177,16 @@ namespace mspaint
             drawingSurface = historyManager.Redo(drawingSurface);
             pbxPaper.Invalidate();
         }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFD = new SaveFileDialog();
+            saveFD.Filter = "PNG files (*.png)|*.png";
+            if (saveFD.ShowDialog() == DialogResult.OK)
+            {
+                drawingSurface.Save(saveFD.FileName, ImageFormat.Png);
+            }
+        }
     }
 
     // Contains the common fields and functions for all drawing classes
@@ -312,7 +323,7 @@ namespace mspaint
         }
     }
 
-    // Uses a LIFO structure to store the changes made in runtime
+    // Uses a LIFO structure to store the relevant changes in runtime
     public class HistoryManager
     {
         private Stack<Bitmap> undoStack = new Stack<Bitmap>();
