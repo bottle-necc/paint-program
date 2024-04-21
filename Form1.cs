@@ -29,6 +29,7 @@ namespace mspaint
         private Square square;
         private Ellipse ellipse;
         private Line line;
+        private HistoryManager historyManager = new HistoryManager();
 
         // Bitmap that saves the drawing surface
         private Bitmap drawingSurface = new Bitmap(800, 600);
@@ -304,8 +305,8 @@ namespace mspaint
         }
     }
 
-    // Initializes the stacks
-    public class UndoRedoManager
+    // Uses a LIFO structure to store the changes made in runtime
+    public class HistoryManager
     {
         private Stack<Bitmap> undoStack = new Stack<Bitmap>();
         private Stack<Bitmap> redoStack = new Stack<Bitmap>();
@@ -330,8 +331,31 @@ namespace mspaint
 
             // Adds the current version into the redo stack
             redoStack.Push(currentStatus);
+
             return previousStatus;
         }
-    }
 
+        public Bitmap Redo(Bitmap currentStatus)
+        {
+            // If there are no states to redo, return the current status
+            if (redoStack.Count == 0)
+            {
+                return currentStatus;
+            }
+
+            // Takes the latest version from the stack
+            Bitmap nextStatus = redoStack.Pop();
+
+            // Adds the current version into the undo stack
+            undoStack.Push(currentStatus);
+
+            return nextStatus;
+        }
+
+        public void Clear()
+        {
+            undoStack.Clear();
+            redoStack.Clear();
+        }
+    }
 }
