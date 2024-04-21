@@ -11,15 +11,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-// Ideas:
-// - Put the draw functions in their own class where every time the user draws a new object is created.
-//   Could make it possible to make the undo and redo buttons work.
-
 namespace mspaint
 {
     public partial class Form1 : Form
     {
-
         private bool isDrawing = false;
         private Point previousPoint;        // Remembers the previous mouse position
         private Color penColor = Color.Black;
