@@ -38,7 +38,7 @@ namespace mspaint
         {
             InitializeComponent();
             InitializeDrawingSurface();
-            historyManager.AddState(new Bitmap(drawingSurface));
+            historyManager.FirstState(new Bitmap(drawingSurface));
         }
 
         // Clears the drawing surface
@@ -317,6 +317,12 @@ namespace mspaint
     {
         private Stack<Bitmap> undoStack = new Stack<Bitmap>();
         private Stack<Bitmap> redoStack = new Stack<Bitmap>();
+        private Bitmap startState;
+
+        public void FirstState(Bitmap status)
+        {
+            startState = status.Clone() as Bitmap;
+        }
 
         // Adds the current bitmap status to the undo stack and clears the redo stack
         public void AddState(Bitmap status)
@@ -330,7 +336,8 @@ namespace mspaint
             // If there are no previous versions, return the current one
             if (undoStack.Count == 0)
             {
-                return currentStatus;
+                undoStack.Push(startState.Clone() as Bitmap);
+                return startState.Clone() as Bitmap;
             }
 
             // Takes the latest version from the stack
@@ -357,12 +364,6 @@ namespace mspaint
             undoStack.Push(currentStatus.Clone() as Bitmap);
 
             return nextStatus;
-        }
-
-        public void Clear()
-        {
-            undoStack.Clear();
-            redoStack.Clear();
         }
     }
 }
