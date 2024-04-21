@@ -25,7 +25,7 @@ namespace mspaint
         private Color drawColor = Color.Black;
         private int penSize = 4;
         private string selected = "pen";
-        private Draw draw = new Draw();
+        private Pencil pencil;
         private Square square;
         private Ellipse ellipse;
         private Line line;
@@ -55,6 +55,10 @@ namespace mspaint
             isDrawing = true;
             previousPoint = e.Location;         // Saves the location of the mouse when it began drawing
 
+            if (selected == "pen")
+            {
+                pencil = new Pencil(Graphics.FromImage(drawingSurface), drawColor, penSize);
+            }
             if (selected == "square")
             {
                 square = new Square(Graphics.FromImage(drawingSurface), penColor, penSize);
@@ -74,7 +78,7 @@ namespace mspaint
         {
             if (isDrawing && selected == "pen")
             {
-                draw.Pen(Graphics.FromImage(drawingSurface), drawColor, penSize, previousPoint, e.Location);
+                pencil.Draw(previousPoint, e.Location);
                 previousPoint = e.Location;
 
                 // Updates the picture box to reflect the changes
@@ -88,14 +92,12 @@ namespace mspaint
             isDrawing = false;
             if (selected == "square")
             {
-                square.GetPoints(previousPoint, e.Location);
-                square.Draw();
+                square.Draw(previousPoint, e.Location);
                 pbxPaper.Invalidate();
             }
             if (selected == "ellipse")
             {
-                ellipse.GetPoints(previousPoint, e.Location);
-                ellipse.Draw();
+                ellipse.Draw(previousPoint, e.Location);
                 pbxPaper.Invalidate();
             }
             if (selected == "line")
@@ -159,36 +161,18 @@ namespace mspaint
         }
     }
 
+    // Contains the common fields and functions for all drawing classes
     public class Draw
-    {
-        public void Pen(Graphics g, Color color, int size, Point previousPoint, Point nextPoint)
-        {
-            Pen pen = new Pen(color, size);
-
-            // Makes the pen a little bit smoother
-            g.SmoothingMode = SmoothingMode.HighQuality;
-
-            // Draws a line from the previous location to the current with the pen
-            g.DrawLine(pen, previousPoint, nextPoint);
-        }
-    }
-
-    // Class containing the common fields and functions of the Square and Ellipse class
-    public class Geometry
     {
         protected Graphics _g;
         protected Color _colour;
         protected int _size;
-        protected Point _previousPoint;
-        protected Point _nextPoint;
 
         public Graphics G { get { return _g; } set { _g = value; } }
         public Color Colour { get { return _colour; } set { _colour = value; } }
         public int Size { get { return _size; } set { _size = value; } }
-        public Point PreviousPoint { get { return _previousPoint; } set { _previousPoint = value; } }
-        public Point NextPoint { get { return _nextPoint; } set { _nextPoint = value; } }
 
-        public Geometry(Graphics g, Color colour, int size) 
+        public Draw(Graphics g, Color colour, int size)
         {
             G = g;
             Colour = colour;
@@ -196,27 +180,39 @@ namespace mspaint
         }
     }
 
-    public class Square : Geometry
+    public class Pencil : Draw
+    {
+        public Pencil(Graphics g, Color colour, int size) : base(g, colour, size)
+        {
+
+        }
+
+        public void Draw(Point previousPoint, Point nextPoint)
+        {
+            Pen pen = new Pen(_colour, _size);
+
+            // Makes the pen a little bit smoother
+            _g.SmoothingMode = SmoothingMode.HighQuality;
+
+            // Draws a line from the previous location to the current with the pen
+            _g.DrawLine(pen, previousPoint, nextPoint);
+        }
+    }
+
+    public class Square : Draw
     {
         public Square(Graphics g, Color colour, int size) : base(g, colour, size) 
         { 
                 
         }
 
-        // Gets the relevant positions to draw the figure
-        public void GetPoints(Point previousPoint, Point nextPoint)
-        {
-            PreviousPoint = previousPoint;
-            NextPoint = nextPoint;
-        }
-
         // Draws the shape
-        public void Draw()
+        public void Draw(Point previousPoint, Point nextPoint)
         {
-            int oldX = _previousPoint.X;
-            int oldY = _previousPoint.Y;
-            int newX = _nextPoint.X;
-            int newY = _nextPoint.Y;
+            int oldX = previousPoint.X;
+            int oldY = previousPoint.Y;
+            int newX = nextPoint.X;
+            int newY = nextPoint.Y;
 
             // Draws if the mouse moves SE
             if (newX - oldX > 0 && newY - oldY > 0)
@@ -244,27 +240,22 @@ namespace mspaint
         }
     }
 
-    public class Ellipse : Geometry
+    public class Ellipse : Draw
     {
         public Ellipse(Graphics g, Color colour, int size) : base(g, colour, size)
         {
 
         }
 
-        // Gets the relevant positions to draw the figure
-        public void GetPoints(Point previousPoint, Point nextPoint)
-        {
-            PreviousPoint = previousPoint;
-            NextPoint = nextPoint;
-        }
+
 
         // Draws the shape
-        public void Draw()
+        public void Draw(Point previousPoint, Point nextPoint)
         {
-            int oldX = _previousPoint.X;
-            int oldY = _previousPoint.Y;
-            int newX = _nextPoint.X;
-            int newY = _nextPoint.Y;
+            int oldX = previousPoint.X;
+            int oldY = previousPoint.Y;
+            int newX = nextPoint.X;
+            int newY = nextPoint.Y;
 
             // Draws if the mouse moves SE
             if (newX - oldX > 0 && newY - oldY > 0)
@@ -292,18 +283,11 @@ namespace mspaint
         }
     }
 
-    public class Line
+    public class Line : Draw
     {
-
-        private Color _colour;
-        private int _size;
-        private Graphics _g;
-
-
-
-        /*public void Draw()
+        public Line(Graphics g, Color colour, int size) : base(g, colour, size)
         {
-            g.DrawLine(new Pen())
-        }*/
+
+        }
     }
 }
