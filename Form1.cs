@@ -38,7 +38,7 @@ namespace mspaint
         {
             InitializeComponent();
             InitializeDrawingSurface();
-
+            historyManager.AddState(new Bitmap(drawingSurface));
         }
 
         // Clears the drawing surface
@@ -89,8 +89,7 @@ namespace mspaint
 
         // Runs when the user releases the mouse button
         private void pbxPaper_MouseUp(object sender, MouseEventArgs e)
-        {
-            isDrawing = false;
+        {            
             if (selected == "square")
             {
                 square.Draw(previousPoint, e.Location);
@@ -103,7 +102,13 @@ namespace mspaint
             {
                 line.Draw(previousPoint, e.Location);
             }
-            pbxPaper.Invalidate();
+            if (isDrawing)
+            {
+                isDrawing = false;
+                historyManager.AddState(new Bitmap(drawingSurface));
+                pbxPaper.Invalidate();
+            }
+            
         }
 
         private void pbxPaper_Paint(object sender, PaintEventArgs e)
@@ -162,12 +167,14 @@ namespace mspaint
 
         private void btnUndo_Click(object sender, EventArgs e)
         {
-
+            drawingSurface = historyManager.Undo(drawingSurface);
+            pbxPaper.Invalidate();
         }
 
         private void btnRedo_Click(object sender, EventArgs e)
         {
-
+            drawingSurface = historyManager.Redo(drawingSurface);
+            pbxPaper.Invalidate();
         }
     }
 
@@ -330,7 +337,7 @@ namespace mspaint
             Bitmap previousStatus = undoStack.Pop();
 
             // Adds the current version into the redo stack
-            redoStack.Push(currentStatus);
+            redoStack.Push(currentStatus.Clone() as Bitmap);
 
             return previousStatus;
         }
@@ -347,7 +354,7 @@ namespace mspaint
             Bitmap nextStatus = redoStack.Pop();
 
             // Adds the current version into the undo stack
-            undoStack.Push(currentStatus);
+            undoStack.Push(currentStatus.Clone() as Bitmap);
 
             return nextStatus;
         }
