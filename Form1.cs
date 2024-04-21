@@ -69,7 +69,7 @@ namespace mspaint
             }
             if (selected == "line")
             {
-
+                line = new Line(Graphics.FromImage(drawingSurface), penColor, penSize);
             }
         }
 
@@ -102,7 +102,8 @@ namespace mspaint
             }
             if (selected == "line")
             {
-
+                line.Draw(previousPoint, e.Location);
+                pbxPaper.Invalidate();
             }
         }
 
@@ -247,8 +248,6 @@ namespace mspaint
 
         }
 
-
-
         // Draws the shape
         public void Draw(Point previousPoint, Point nextPoint)
         {
@@ -289,5 +288,11 @@ namespace mspaint
         {
 
         }
+
+        public void Draw(Point previousPoint, Point nextPoint) 
+        { 
+            _g.DrawLine(new Pen(Colour, _size), previousPoint, nextPoint);
+        }
+
     }
 }
