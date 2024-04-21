@@ -173,6 +173,7 @@
             this.btnLine.TabIndex = 7;
             this.btnLine.Text = "Line";
             this.btnLine.UseVisualStyleBackColor = true;
+            this.btnLine.Click += new System.EventHandler(this.btnLine_Click);
             // 
             // btnSquare
             // 

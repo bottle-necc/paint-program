@@ -28,6 +28,7 @@ namespace mspaint
         private Draw draw = new Draw();
         private Square square;
         private Ellipse ellipse;
+        private Line line;
 
         // Bitmap that saves the drawing surface
         private Bitmap drawingSurface = new Bitmap(800, 600);
@@ -62,6 +63,10 @@ namespace mspaint
             {
                 ellipse = new Ellipse(Graphics.FromImage(drawingSurface), penColor, penSize);
             }
+            if (selected == "line")
+            {
+
+            }
         }
 
         // Runs while the mouse is held, uses the mouse movement to draw
@@ -92,6 +97,10 @@ namespace mspaint
                 ellipse.GetPoints(previousPoint, e.Location);
                 ellipse.Draw();
                 pbxPaper.Invalidate();
+            }
+            if (selected == "line")
+            {
+
             }
         }
 
@@ -142,6 +151,11 @@ namespace mspaint
         private void btnEllips_Click(object sender, EventArgs e)
         {
             selected = "ellipse";
+        }
+
+        private void btnLine_Click(object sender, EventArgs e)
+        {
+            selected = "line";
         }
     }
 
@@ -276,5 +290,20 @@ namespace mspaint
                 _g.DrawEllipse(new Pen(_colour, _size), newX, oldY, oldX - newX, newY - oldY);
             }
         }
+    }
+
+    public class Line
+    {
+
+        private Color _colour;
+        private int _size;
+        private Graphics _g;
+
+
+
+        /*public void Draw()
+        {
+            g.DrawLine(new Pen())
+        }*/
     }
 }
