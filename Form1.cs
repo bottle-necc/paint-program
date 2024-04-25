@@ -103,6 +103,7 @@ namespace mspaint
                 isDrawing = false;
                 historyManager.AddState(new Bitmap(drawingSurface));
                 pbxPaper.Invalidate();
+                GC.Collect();
             }
             
         }
